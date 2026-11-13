@@ -1,0 +1,32 @@
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+.aws/
+.codex/
+.agents/
+*.pem
+*.key
+# Environments and model/dataset caches
+.venv/
+venv/
+hf_cache/
+.cache/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+# Upstream checkout and trusted selection artifacts (managed separately)
+NeuroStrike/
+# Experiment outputs; preserve locally, do not commit by default
+results/
+*.log
+*.err
+*.pt
+*.pth
+*.p
+*.bin
+*.safetensors
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,21 @@
+# PyTorch and torchvision are installed separately with matching CUDA wheels.
+# Transformers >=4.51 supports NeuroStrike's Gemma3 imports; keep major version <5.
+transformers>=4.51,<5
+accelerate>=1.2,<2
+datasets>=3,<5
+huggingface_hub>=0.30,<1
+safetensors>=0.5
+qwen-vl-utils[decord]==0.0.8
+GPUtil>=1.4
+scikit-learn>=1.5
+scipy>=1.13
+numpy>=1.26,<2.3
+pandas>=2.2
+matplotlib>=3.8
+plotly>=5.20
+nbformat>=5.10
+nbclient>=0.10
+ipykernel>=6.29
+ipywidgets>=8
+sentencepiece>=0.2
+protobuf>=4
