@@ -18,6 +18,10 @@ DOMAINS = ('all', 'PKU-SafeRLHF', 'SciQ')
 runs = {}
 for path in ROOT.glob('all-adjacent_*/manifest.json'):
     meta = json.loads(path.read_text())
+    if meta.get('neuron_selection', 'neurostrike') != 'neurostrike':
+        continue
+    if meta.get('bias', False) or meta.get('activation', 'identity' if meta.get('method') == 'direct' else 'tanh') != ('identity' if meta.get('method') == 'direct' else 'tanh'):
+        continue
     if meta['train_n'] != 500:
         continue
     folder = path.parent
@@ -57,7 +61,7 @@ def plot_heldout(include_only=False):
     labels = ['Original', 'NeuroStrike\nwithout edges', 'NeuroStrike\nwith edges']
     if include_only:
         labels.insert(1, 'NeuroStrike\nneurons only')
-    fig, axes = plt.subplots(1, 3, figsize=(13, 5))
+    fig, axes = plt.subplots(1, 3, figsize=(16 if include_only else 13, 5))
     summary = []
     for ax, domain in zip(axes, DOMAINS):
         values = [[] for _ in labels]
@@ -86,16 +90,19 @@ def plot_heldout(include_only=False):
         ax.set_ylabel('Held-out completion loss (lower is better)')
         ax.grid(axis='y', alpha=.2)
         ax.set_axisbelow(True)
-    fig.suptitle('Original model vs trained NeuroStrike neurons · all consecutive layers')
-    fig.text(.5, .025, 'Bars: mean held-out loss; dots: three seed-specific datasets (42, 43, 44), not confidence intervals.\n'
+    fig.suptitle('Original model, NeuroStrike neurons only, and trained versions' if include_only else
+                 'Original model vs trained NeuroStrike neurons · all consecutive layers')
+    caption = 'Bars: mean held-out loss; dots: three seed-specific datasets (42, 43, 44), not confidence intervals.\n' + (
+             'Neurons only: other MLP neurons disabled; attention and residuals retained. No training.\n' if include_only else '')
+    fig.text(.5, .025, caption +
              'Trained versions: 19,896 weights each. With edges uses 8 added shared nodes per consecutive layer pair.\n'
              'Training per seed: 400 PKU + 100 SciQ; held-out: 80 PKU + 20 SciQ. This measures answer prediction, not safety.',
              ha='center', fontsize=10)
-    fig.tight_layout(rect=(0, .19, 1, .93))
+    fig.tight_layout(rect=(0, .23 if include_only else .19, 1, .93))
     if include_only:
         fig.savefig(OUT / 'heldout_with_neurostrike_only.png', dpi=180)
+        fig.savefig(OUT / 'heldout_four_settings.png', dpi=180)
     else:
-        fig.savefig(OUT / 'heldout_four_settings.png', dpi=180)  # legacy filename
         fig.savefig(OUT / 'heldout_three_settings.png', dpi=180)
     plt.close(fig)
 
@@ -103,7 +110,11 @@ def plot_heldout(include_only=False):
 
 summary = plot_heldout()
 if only_runs:
-    plot_heldout(include_only=True)
+    four_summary = plot_heldout(include_only=True)
+    with (OUT / 'four_settings_summary.csv').open('w') as f:
+        writer = csv.DictWriter(f, fieldnames=list(four_summary[0]))
+        writer.writeheader()
+        writer.writerows(four_summary)
 
 fig, axes = plt.subplots(2, 3, figsize=(14, 7), sharex=True)
 for col, seed in enumerate(seeds):
@@ -215,6 +226,6 @@ fig.savefig(OUT / 'edge_placement_variants.png', dpi=180)
 plt.close(fig)
 with (OUT / 'three_settings_summary.csv').open('w') as f:
     writer = csv.DictWriter(f, fieldnames=list(summary[0])); writer.writeheader(); writer.writerows(summary)
-(OUT / 'README.md').write_text('# All-layer figures\n\nCurrent specification: [CURRENT_EXPERIMENT.md](../../CURRENT_EXPERIMENT.md).\nThese figures use the six full all-layer runs at seeds 42, 43, 44; smoke and\nsingle-pair runs are excluded.\n\n- `heldout_three_settings.png`: actual held-out completion loss bars, zero-based\n  axes; original / trained without edges / trained with edges. Bars are means\n  across three seed-specific datasets; dots are seeds, not confidence intervals.\n- `three_settings_summary.csv`: values underlying the current loss chart.\n- `architectures_all_layers.png`: representative computations and trainable weights.\n- `edge_placement_variants.png`: five insertion points tested in the pair study;\n  only selected-MLP insertion is implemented/tested for all consecutive layers.\n- `training_comparison.png`: fixed-train and mini-validation changes from step zero.\n- `heldout_four_settings.png`: legacy alias of the three-setting chart, not a fourth\n  measured setting. `four_settings_summary.csv` is an older export.\n\nWith edges means **eight new shared hidden neurons with tanh and no biases per\nconsecutive pair**; it is not a direct full-connection result. Without edges means\nseparate trained adjustments to each selected neuron, with no added connections\nbetween selected neurons. The original network is retained and frozen in both.\nBoth trained versions use 19,896 weights. The untrained adapter adds zero and is\nomitted because it equals the original. Direct connections without hidden neurons\nand the tanh/bias variants are planned comparisons, not measured bars.\n\nIf all three neurons-only evaluations pass matching-data/baseline checks,\n`plot_all_layer_results.py` also writes `heldout_with_neurostrike_only.png`.\nNeurons-only zeros the nonselected MLP neurons but retains attention and residuals;\nit is different from the old experiment removing selected neurons.\n\nNo per-layer ablation scores are available. No safety superiority follows from\ncompletion loss. Mini-validation overlaps final evaluation. Regenerate on CPU:\n\n```bash\nOMP_NUM_THREADS=1 .venv/bin/python plot_all_layer_results.py\n```\n')
+(OUT / 'README.md').write_text('# All-layer figures\n\nCurrent specification: [CURRENT_EXPERIMENT.md](../../CURRENT_EXPERIMENT.md).\nThese figures use the six full all-layer runs at seeds 42, 43, 44; smoke and\nsingle-pair runs are excluded.\n\n- `heldout_three_settings.png`: actual held-out completion loss bars, zero-based\n  axes; original / trained without edges / trained with edges. Bars are means\n  across three seed-specific datasets; dots are seeds, not confidence intervals.\n- `three_settings_summary.csv`: values underlying the current loss chart.\n- `architectures_all_layers.png`: representative computations and trainable weights.\n- `edge_placement_variants.png`: five insertion points tested in the pair study;\n  only selected-MLP insertion is implemented/tested for all consecutive layers.\n- `training_comparison.png`: fixed-train and mini-validation changes from step zero.\n- `heldout_four_settings.png` / `heldout_with_neurostrike_only.png`: four-setting\n  comparison including the completed neurons-only evaluation; `four_settings_summary.csv`\n  contains all four measured settings.\n\nWith edges means **eight new shared hidden neurons with tanh and no biases per\nconsecutive pair**; it is not a direct full-connection result. Without edges means\nseparate trained adjustments to each selected neuron, with no added connections\nbetween selected neurons. The original network is retained and frozen in both.\nBoth trained versions use 19,896 weights. The untrained adapter adds zero and is\nomitted because it equals the original. Direct connections without hidden neurons\nand the tanh/bias variants are planned comparisons, not measured bars.\n\nJob 38653072 completed successfully for all three seeds. Tokenized hashes, prompts,\nanswers and token counts match; original per-sequence losses match exactly.\nThe plotter writes a separate `heldout_with_neurostrike_only.png` comparison.\nNeurons-only zeros the nonselected MLP neurons but retains attention and residuals;\nit is different from the old experiment removing selected neurons.\n\nNo per-layer ablation scores are available. No safety superiority follows from\ncompletion loss. Mini-validation overlaps final evaluation. Regenerate on CPU:\n\n```bash\nOMP_NUM_THREADS=1 .venv/bin/python plot_all_layer_results.py\n```\n')
 
 print(f'Saved three figures and source summary to {OUT}')

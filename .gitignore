@@ -18,7 +18,7 @@ __pycache__/
 # Upstream checkout and trusted selection artifacts (managed separately)
 NeuroStrike/
 # Experiment outputs; preserve locally, do not commit by default
-results/
+/results/
 *.log
 *.err
 *.pt

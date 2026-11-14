@@ -1,0 +1,298 @@
+{
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "prompt_date": "13 Nov 2026",
+  "model_config": {
+    "hidden_size": 2048,
+    "intermediate_size": 8192,
+    "num_hidden_layers": 16
+  },
+  "source_split_sizes": {
+    "PKU-Alignment/PKU-SafeRLHF": {
+      "train": 73907,
+      "test": 8211
+    },
+    "allenai/sciq": {
+      "train": 11679,
+      "validation": 1000,
+      "test": 1000
+    }
+  },
+  "rows": [
+    {
+      "seed": 42,
+      "split": "train",
+      "domain": "all",
+      "examples": 500,
+      "completion_tokens": 36038,
+      "mean_completion_tokens": 72.076,
+      "mean_total_tokens": 151.96,
+      "max_total_tokens": 256,
+      "answer_truncated": 101,
+      "prompt_truncated": 3
+    },
+    {
+      "seed": 42,
+      "split": "train",
+      "domain": "PKU-SafeRLHF",
+      "examples": 400,
+      "completion_tokens": 35691,
+      "mean_completion_tokens": 89.2275,
+      "mean_total_tokens": 170.7175,
+      "max_total_tokens": 256,
+      "answer_truncated": 101,
+      "prompt_truncated": 3
+    },
+    {
+      "seed": 42,
+      "split": "train",
+      "domain": "SciQ",
+      "examples": 100,
+      "completion_tokens": 347,
+      "mean_completion_tokens": 3.47,
+      "mean_total_tokens": 76.93,
+      "max_total_tokens": 103,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 42,
+      "split": "validation",
+      "domain": "all",
+      "examples": 100,
+      "completion_tokens": 7085,
+      "mean_completion_tokens": 70.85,
+      "mean_total_tokens": 150.43,
+      "max_total_tokens": 234,
+      "answer_truncated": 20,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 42,
+      "split": "validation",
+      "domain": "PKU-SafeRLHF",
+      "examples": 80,
+      "completion_tokens": 7019,
+      "mean_completion_tokens": 87.7375,
+      "mean_total_tokens": 169.2,
+      "max_total_tokens": 234,
+      "answer_truncated": 20,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 42,
+      "split": "validation",
+      "domain": "SciQ",
+      "examples": 20,
+      "completion_tokens": 66,
+      "mean_completion_tokens": 3.3,
+      "mean_total_tokens": 75.35,
+      "max_total_tokens": 99,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 43,
+      "split": "train",
+      "domain": "all",
+      "examples": 500,
+      "completion_tokens": 34604,
+      "mean_completion_tokens": 69.208,
+      "mean_total_tokens": 149.344,
+      "max_total_tokens": 256,
+      "answer_truncated": 77,
+      "prompt_truncated": 1
+    },
+    {
+      "seed": 43,
+      "split": "train",
+      "domain": "PKU-SafeRLHF",
+      "examples": 400,
+      "completion_tokens": 34243,
+      "mean_completion_tokens": 85.6075,
+      "mean_total_tokens": 167.7175,
+      "max_total_tokens": 256,
+      "answer_truncated": 77,
+      "prompt_truncated": 1
+    },
+    {
+      "seed": 43,
+      "split": "train",
+      "domain": "SciQ",
+      "examples": 100,
+      "completion_tokens": 361,
+      "mean_completion_tokens": 3.61,
+      "mean_total_tokens": 75.85,
+      "max_total_tokens": 93,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 43,
+      "split": "validation",
+      "domain": "all",
+      "examples": 100,
+      "completion_tokens": 7789,
+      "mean_completion_tokens": 77.89,
+      "mean_total_tokens": 160.4,
+      "max_total_tokens": 256,
+      "answer_truncated": 24,
+      "prompt_truncated": 2
+    },
+    {
+      "seed": 43,
+      "split": "validation",
+      "domain": "PKU-SafeRLHF",
+      "examples": 80,
+      "completion_tokens": 7710,
+      "mean_completion_tokens": 96.375,
+      "mean_total_tokens": 181.2875,
+      "max_total_tokens": 256,
+      "answer_truncated": 24,
+      "prompt_truncated": 2
+    },
+    {
+      "seed": 43,
+      "split": "validation",
+      "domain": "SciQ",
+      "examples": 20,
+      "completion_tokens": 79,
+      "mean_completion_tokens": 3.95,
+      "mean_total_tokens": 76.85,
+      "max_total_tokens": 94,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 44,
+      "split": "train",
+      "domain": "all",
+      "examples": 500,
+      "completion_tokens": 35673,
+      "mean_completion_tokens": 71.346,
+      "mean_total_tokens": 150.802,
+      "max_total_tokens": 256,
+      "answer_truncated": 91,
+      "prompt_truncated": 1
+    },
+    {
+      "seed": 44,
+      "split": "train",
+      "domain": "PKU-SafeRLHF",
+      "examples": 400,
+      "completion_tokens": 35327,
+      "mean_completion_tokens": 88.3175,
+      "mean_total_tokens": 169.3225,
+      "max_total_tokens": 256,
+      "answer_truncated": 91,
+      "prompt_truncated": 1
+    },
+    {
+      "seed": 44,
+      "split": "train",
+      "domain": "SciQ",
+      "examples": 100,
+      "completion_tokens": 346,
+      "mean_completion_tokens": 3.46,
+      "mean_total_tokens": 76.72,
+      "max_total_tokens": 117,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 44,
+      "split": "validation",
+      "domain": "all",
+      "examples": 100,
+      "completion_tokens": 6918,
+      "mean_completion_tokens": 69.18,
+      "mean_total_tokens": 150.6,
+      "max_total_tokens": 238,
+      "answer_truncated": 17,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 44,
+      "split": "validation",
+      "domain": "PKU-SafeRLHF",
+      "examples": 80,
+      "completion_tokens": 6844,
+      "mean_completion_tokens": 85.55,
+      "mean_total_tokens": 169.25,
+      "max_total_tokens": 238,
+      "answer_truncated": 17,
+      "prompt_truncated": 0
+    },
+    {
+      "seed": 44,
+      "split": "validation",
+      "domain": "SciQ",
+      "examples": 20,
+      "completion_tokens": 74,
+      "mean_completion_tokens": 3.7,
+      "mean_total_tokens": 76.0,
+      "max_total_tokens": 85,
+      "answer_truncated": 0,
+      "prompt_truncated": 0
+    }
+  ],
+  "checks": [
+    {
+      "seed": 42,
+      "split": "train",
+      "tokenized_hash_matched": true
+    },
+    {
+      "seed": 42,
+      "split": "val",
+      "tokenized_hash_matched": true
+    },
+    {
+      "seed": 43,
+      "split": "train",
+      "tokenized_hash_matched": true
+    },
+    {
+      "seed": 43,
+      "split": "val",
+      "tokenized_hash_matched": true
+    },
+    {
+      "seed": 44,
+      "split": "train",
+      "tokenized_hash_matched": true
+    },
+    {
+      "seed": 44,
+      "split": "val",
+      "tokenized_hash_matched": true
+    }
+  ],
+  "exact_prompt_overlap": {
+    "42": 0,
+    "43": 0,
+    "44": 0
+  },
+  "cross_seed_train_validation_overlap": {
+    "train42_val42": 0,
+    "train42_val43": 1,
+    "train42_val44": 0,
+    "train43_val42": 2,
+    "train43_val43": 0,
+    "train43_val44": 0,
+    "train44_val42": 1,
+    "train44_val43": 0,
+    "train44_val44": 0
+  },
+  "unique_prompts_across_seeds": {
+    "train": 1469,
+    "validation": 295
+  },
+  "notes": [
+    "Exact normalized prompt overlap only; no semantic-overlap or pretraining-contamination claim.",
+    "100 held-out examples serve as validation for architecture selection, not an untouched final test.",
+    "Only completion tokens enter CE. Training averages per-example mean losses; reported evaluation CE is token-weighted."
+  ],
+  "full_model_parameters": 1235814400,
+  "mixed_precision_parameter_state_estimate_GiB_16bytes": 18.415069580078125,
+  "cross_seed_union_prompt_overlap": 4
+}

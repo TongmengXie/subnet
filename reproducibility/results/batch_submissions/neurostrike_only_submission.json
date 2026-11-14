@@ -1,0 +1,17 @@
+{
+  "timestamp_utc": "2026-11-13T19:29:59.320323+00:00",
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--account=isa-secure-2026",
+    "viking_neurostrike_only.sbatch"
+  ],
+  "purpose": "User-approved neurons-only evaluation; no training; seeds 42,43,44",
+  "error": "Submission timed out; acceptance unconfirmed",
+  "stdout": "",
+  "stderr": "",
+  "retry": {
+    "job_id": "38653072",
+    "submission": "accepted via Slurm outside sandbox after empty queue/accounting checks"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "project": "/users/wmd548/myproject/edge_learning",
+  "sweep": "/users/wmd548/myproject/edge_learning/results/width_sweep_20261114_fixeddate",
+  "sweep_array": "38655694",
+  "references": {
+    "42": "/users/wmd548/myproject/edge_learning/results/all-adjacent_connected_selected_mlp_seed42_38651215/manifest.json",
+    "43": "/users/wmd548/myproject/edge_learning/results/all-adjacent_connected_selected_mlp_seed43_38651217/manifest.json",
+    "44": "/users/wmd548/myproject/edge_learning/results/all-adjacent_connected_selected_mlp_seed44_38651219/manifest.json"
+  },
+  "prompt_date": "13 Nov 2026",
+  "random_tasks": [
+    {
+      "task": 0,
+      "seed": 42,
+      "selection_seed": 1001
+    },
+    {
+      "task": 1,
+      "seed": 42,
+      "selection_seed": 1002
+    },
+    {
+      "task": 2,
+      "seed": 42,
+      "selection_seed": 1003
+    },
+    {
+      "task": 3,
+      "seed": 43,
+      "selection_seed": 1001
+    },
+    {
+      "task": 4,
+      "seed": 43,
+      "selection_seed": 1002
+    },
+    {
+      "task": 5,
+      "seed": 43,
+      "selection_seed": 1003
+    },
+    {
+      "task": 6,
+      "seed": 44,
+      "selection_seed": 1001
+    },
+    {
+      "task": 7,
+      "seed": 44,
+      "selection_seed": 1002
+    },
+    {
+      "task": 8,
+      "seed": 44,
+      "selection_seed": 1003
+    }
+  ],
+  "full_model_tasks": [
+    {
+      "task": 0,
+      "seed": 42,
+      "lr": 2e-05
+    },
+    {
+      "task": 1,
+      "seed": 43,
+      "lr": 2e-05
+    },
+    {
+      "task": 2,
+      "seed": 44,
+      "lr": 2e-05
+    }
+  ],
+  "full_model_lr_status": "Provisional, not tuned",
+  "code_sha256": {
+    "train_full_model.py": "bfea92d3ffff6b7c2707ac237c0f25dfc3d0ed9d4a09cc94efcef4618ddb13dd",
+    "run_baseline_task.py": "23e7d6fa7fa0fe9b38f70db16590d42b3df820ac4f041044887854babfedeb1b",
+    "train_cross_layer.py": "0929448d877518f6112b2d2f1cd5fce03623ac694fcb54d3778a0b951ea70e2c",
+    "cross_layer_adapter.py": "c8cdc7203b2968873389ccfb40c228940a835001c1418c877b8787f7f822fe73",
+    "adjacent_adapters.py": "e654db9fd063f95867e2d79feac3569da6f8794dffdd6c782cd29a9c7dd215ad",
+    "neuron_selection.py": "98d607bc66165f3969dd09a85ea4504f18c72e7020ca39d103c3c43feb454451",
+    "plot_width_sweep.py": "3105928246db21014814f2c0dbfb4c414ddcc062e0c783ffa4daafcf6f937ea2",
+    "test_full_model.py": "4c331c19481ae2b03b7385283d4b5524b5f03af262971a923862bece3adcf009",
+    "test_random_neurons.py": "b1fffd19ff14b2d599cfba656912b0ee2f3cb554008ebe6d1321b3fb8fd3f7bb",
+    "viking_baseline.sbatch": "f156ed3cc821d61abf80348d32485cd4497aec5537e9def1d5a5d0919997af1d"
+  }
+}

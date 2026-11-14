@@ -13,27 +13,43 @@ def consecutive_pairs(channels):
 
 
 class AdjacentAdapter(nn.Module):
-    """Connected skips or an exactly parameter-matched channel-separable control.
+    """Bottleneck skips, matched independent control, or direct full connections.
+
+    Direct connections use sum(n_source*n_target) weights, no hidden neurons or
+    activation function, and are not budget-matched to the original two methods.
 
     Independent control: each target channel receives sum b*tanh(a*z_channel).
     Units are distributed deterministically across target channels. No cross-channel
     or cross-layer inputs enter the correction. Equal budgets do not imply equal
     functional capacity; record this control definition when reporting results.
     """
-    def __init__(self, model, channels, rank=8, method='connected'):
+    def __init__(self, model, channels, rank=8, method='connected', activation=None, bias=False):
         super().__init__()
-        if method not in ('connected', 'independent') or rank < 1:
+        if method not in ('connected', 'independent', 'direct') or (method != 'direct' and rank < 1):
             raise ValueError('Invalid method/rank')
+        activation = activation or ('identity' if method == 'direct' else 'tanh')
+        if activation not in ('tanh', 'identity') or (method == 'direct' and activation != 'identity'):
+            raise ValueError('Invalid activation for this architecture')
+        if method == 'independent' and (activation != 'tanh' or bias):
+            raise ValueError('Independent control retains its original tanh, bias-free definition')
+        self.activation, self.bias = activation, bool(bias)
         self.pairs = consecutive_pairs(channels)
         self.channels = {i: list(channels[i]) for i in sorted({j for p in self.pairs for j in p})}
-        self.method, self.rank = method, rank
+        self.method, self.rank = method, None if method == 'direct' else rank
         self.blocks = nn.ModuleDict()
         self._active = False
-        budget = sum(rank * (len(channels[i]) + len(channels[j])) for i, j in self.pairs)
-        if method == 'connected':
+        budget = (sum(len(channels[i]) * len(channels[j]) for i, j in self.pairs)
+                  if method == 'direct' else
+                  sum(rank * (len(channels[i]) + len(channels[j])) for i, j in self.pairs))
+        if bias:
+            budget += sum(len(channels[j]) + (0 if method == 'direct' else rank) for _, j in self.pairs)
+        if method in ('connected', 'direct'):
             for i, j in self.pairs:
                 self.blocks[str(i)] = CrossLayerAdapter(model, source_layer=i, target_layer=j,
-                    source_channels=channels[i], target_channels=channels[j], rank=rank)
+                    source_channels=channels[i], target_channels=channels[j],
+                    rank=8 if method == 'direct' else rank,
+                    connection='direct' if method == 'direct' else 'bottleneck',
+                    activation=activation, bias=bias)
         else:
             targets = [j for _, j in self.pairs]
             count = sum(len(channels[j]) for j in targets)
@@ -60,6 +76,7 @@ class AdjacentAdapter(nn.Module):
 
     def config(self):
         return dict(channels=self.channels, rank=self.rank, method=self.method,
+                    activation=self.activation, bias=self.bias,
                     overlap_policy='inject_then_capture')
 
     @contextmanager
@@ -72,7 +89,7 @@ class AdjacentAdapter(nn.Module):
         outgoing = {i for i, _ in self.pairs}
         def hook(layer):
             def apply(module, args):
-                if self.method == 'connected':
+                if self.method in ('connected', 'direct'):
                     if layer in incoming:
                         args = self.blocks[str(incoming[layer])]._inject_target(module, args)
                     if layer in outgoing:
@@ -92,17 +109,17 @@ class AdjacentAdapter(nn.Module):
             return apply
         try:
             for block in self.blocks.values():
-                if self.method == 'connected':
+                if self.method in ('connected', 'direct'):
                     block._cache = None
             for layer in self.channels:
                 handles.append(model.model.layers[layer].mlp.down_proj.register_forward_pre_hook(hook(layer)))
             yield model
-            if self.method == 'connected' and any(b._cache is not None for b in self.blocks.values()):
+            if self.method in ('connected', 'direct') and any(b._cache is not None for b in self.blocks.values()):
                 raise RuntimeError('Unconsumed source activation')
         finally:
             for handle in handles:
                 handle.remove()
-            if self.method == 'connected':
+            if self.method in ('connected', 'direct'):
                 for block in self.blocks.values():
                     block._cache = None
             self._active = False

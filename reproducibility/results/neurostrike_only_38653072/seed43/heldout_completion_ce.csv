@@ -1,0 +1,7 @@
+method,domain,heldout_ce
+original,all,2.4361639392400436
+original,SciQ,3.758760503575772
+original,PKU-SafeRLHF,2.4226120418882244
+neurostrike_only,all,13.58946644783877
+neurostrike_only,SciQ,13.958869185628771
+neurostrike_only,PKU-SafeRLHF,13.585681387360767

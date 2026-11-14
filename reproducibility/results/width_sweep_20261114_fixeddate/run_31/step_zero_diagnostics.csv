@@ -1,0 +1,7 @@
+split,domain,ce
+fixed_train,all,2.388291304020942
+fixed_train,SciQ,5.089052891731262
+fixed_train,PKU-SafeRLHF,2.3181416523921023
+mini_val,all,2.438330568318675
+mini_val,PKU-SafeRLHF,2.4280592547522653
+mini_val,SciQ,3.285713937547472

@@ -1,0 +1,22 @@
+seed,domain,setting,change_vs_8_tanh,bootstrap_low,bootstrap_high,examples,note
+42,all,Without edges,-0.0006233405394108417,-0.003133074703293234,0.0021824216021039274,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,8 nodes tanh,0.0,0.0,0.0,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,8 nodes tanh + bias,-0.012305191164504493,-0.014366615288249581,-0.010458608481336729,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,8 nodes no tanh,-0.0032845161579273365,-0.006263848444351367,-0.0007435889549369516,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,8 nodes no tanh + bias,-0.010846557440581146,-0.013929571560259615,-0.008462656661694504,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,Direct,-0.010675655470954048,-0.01482661439119383,-0.007776844136535308,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,all,Direct + bias,-0.022158285717905304,-0.026823695693876878,-0.01922703046803816,16,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,Without edges,-0.0005029302050634636,-0.0030400764457309565,0.0025529256872735082,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,8 nodes tanh,0.0,0.0,0.0,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,8 nodes tanh + bias,-0.012049004488568289,-0.014135587194338998,-0.010156311846753705,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,8 nodes no tanh,-0.0031634596743193386,-0.006303826217092393,-0.0005943533202624815,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,8 nodes no tanh + bias,-0.010336359200528509,-0.013176841443998815,-0.007948661533590067,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,Direct,-0.01022903499229947,-0.01409593702662396,-0.007171686120384355,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,PKU-SafeRLHF,Direct + bias,-0.021348179871501446,-0.026087374136105054,-0.018567042989098045,13,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,Without edges,-0.014157462120056152,-0.020282268524169922,-0.009191513061523438,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,8 nodes tanh,0.0,0.0,0.0,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,8 nodes tanh + bias,-0.041100573539733884,-0.055019378662109375,-0.012603759765625,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,8 nodes no tanh,-0.01689126491546631,-0.03467845916748047,-0.0020630359649658203,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,8 nodes no tanh + bias,-0.06819283962249756,-0.1165916919708252,-0.017416000366210938,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,Direct,-0.06087579727172852,-0.10165596008300781,-0.019448280334472656,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory
+42,SciQ,Direct + bias,-0.11321418285369873,-0.17417359352111816,-0.08062744140625,3,Paired example bootstrap only; excludes training/seed uncertainty; exploratory

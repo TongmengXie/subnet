@@ -1,0 +1,31 @@
+{
+  "method": "full_model",
+  "unchanged_architecture": true,
+  "trainable_parameters": 1235814400,
+  "seed": 42,
+  "lr": 2e-05,
+  "train_n": 32,
+  "val_n": 16,
+  "optimizer_steps": 8,
+  "grad_accum": 4,
+  "tokenized_sha256": {
+    "train": "29e5d89d941f53b17555bf78dcc126dc53b6496fe8f6957d89773f133ba0e633",
+    "val": "6cdf91a9180aa2f92d35b8bae25fb25e993a03b6e3b95b1e424e543e7abc907b"
+  },
+  "prompt_date": "13 Nov 2026",
+  "reference": "/users/wmd548/myproject/edge_learning/results/all-adjacent_connected_selected_mlp_seed42_38651215/manifest.json",
+  "training_precision": "FP32 parameters and AdamW states; BF16 autocast",
+  "evaluation_precision": "BF16 as reference",
+  "memory": {
+    "peak_allocated_GiB": 23.03852415084839,
+    "peak_reserved_GiB": 24.203125,
+    "total_device_GiB": 44.423828125,
+    "gpu": "NVIDIA A40",
+    "elapsed_seconds": 13.116430790978484
+  },
+  "code_sha256": {
+    "train_full_model.py": "bfea92d3ffff6b7c2707ac237c0f25dfc3d0ed9d4a09cc94efcef4618ddb13dd",
+    "train_cross_layer.py": "0929448d877518f6112b2d2f1cd5fce03623ac694fcb54d3778a0b951ea70e2c"
+  },
+  "notes": "Provisional LR, not independently optimized. Validation is not an untouched final test."
+}

@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 import random
 import sys
+from functools import partial
 
 import numpy as np
 import torch
@@ -77,6 +78,8 @@ def main():
     for param in model.parameters():
         param.requires_grad_(False)
     tokenizer = AutoTokenizer.from_pretrained(model_id, local_files_only=True)
+    tokenizer.apply_chat_template = partial(tokenizer.apply_chat_template,
+                                           date_string=first.get('prompt_date','13 Nov 2026'))
     selection = root / 'NeuroStrike/pre_computed_sn' / f'weights_{model_id.split("/")[-1]}.p'
     channels = load_neurostrike_channel_map(selection, threshold=first['selection_threshold'])
     def prompt_fn(q):

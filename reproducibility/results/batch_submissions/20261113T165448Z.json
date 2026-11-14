@@ -1,0 +1,212 @@
+[
+  {
+    "job_id": "38651211",
+    "label": "smoke repaired attention placement",
+    "scope": "pair",
+    "method": "connected",
+    "placement": "post_input_norm_pre_attention",
+    "seed": 42,
+    "smoke": true,
+    "dependencies": [],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=pair,CROSS_METHOD=connected,CROSS_PLACEMENT=post_input_norm_pre_attention,CROSS_SEED=42,CROSS_RANK=8,SMOKE=1",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651212",
+    "label": "smoke all-adjacent connected",
+    "scope": "all-adjacent",
+    "method": "connected",
+    "placement": "selected_mlp",
+    "seed": 42,
+    "smoke": true,
+    "dependencies": [],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=connected,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=42,CROSS_RANK=8,SMOKE=1",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651213",
+    "label": "smoke all-adjacent independent",
+    "scope": "all-adjacent",
+    "method": "independent",
+    "placement": "selected_mlp",
+    "seed": 42,
+    "smoke": true,
+    "dependencies": [],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=independent,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=42,CROSS_RANK=8,SMOKE=1",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651214",
+    "label": "full missing placement",
+    "scope": "pair",
+    "method": "connected",
+    "placement": "post_input_norm_pre_attention",
+    "seed": 42,
+    "smoke": false,
+    "dependencies": [
+      "38651211"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=pair,CROSS_METHOD=connected,CROSS_PLACEMENT=post_input_norm_pre_attention,CROSS_SEED=42,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651215",
+    "label": "full connected seed 42",
+    "scope": "all-adjacent",
+    "method": "connected",
+    "placement": "selected_mlp",
+    "seed": 42,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=connected,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=42,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651216",
+    "label": "full independent seed 42",
+    "scope": "all-adjacent",
+    "method": "independent",
+    "placement": "selected_mlp",
+    "seed": 42,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=independent,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=42,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651217",
+    "label": "full connected seed 43",
+    "scope": "all-adjacent",
+    "method": "connected",
+    "placement": "selected_mlp",
+    "seed": 43,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=connected,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=43,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651218",
+    "label": "full independent seed 43",
+    "scope": "all-adjacent",
+    "method": "independent",
+    "placement": "selected_mlp",
+    "seed": 43,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=independent,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=43,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651219",
+    "label": "full connected seed 44",
+    "scope": "all-adjacent",
+    "method": "connected",
+    "placement": "selected_mlp",
+    "seed": 44,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=connected,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=44,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  },
+  {
+    "job_id": "38651220",
+    "label": "full independent seed 44",
+    "scope": "all-adjacent",
+    "method": "independent",
+    "placement": "selected_mlp",
+    "seed": 44,
+    "smoke": false,
+    "dependencies": [
+      "38651211",
+      "38651212",
+      "38651213"
+    ],
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--account=isa-secure-2026",
+      "--export=ALL,CROSS_SCOPE=all-adjacent,CROSS_METHOD=independent,CROSS_PLACEMENT=selected_mlp,CROSS_SEED=44,CROSS_RANK=8,SMOKE=0",
+      "--dependency=afterok:38651211:38651212:38651213",
+      "--kill-on-invalid-dep=yes",
+      "viking_cross_layer.sbatch"
+    ]
+  }
+]

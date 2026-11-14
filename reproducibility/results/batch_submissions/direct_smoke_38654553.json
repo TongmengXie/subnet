@@ -1,0 +1,25 @@
+{
+  "job_id": "38654553",
+  "submitted_at_utc": "2026-11-13T22:40:34.797765+00:00",
+  "purpose": "User-approved direct full-connection smoke test",
+  "scope": "all-adjacent",
+  "method": "direct",
+  "placement": "selected_mlp",
+  "seed": 42,
+  "train_n": 32,
+  "val_n": 16,
+  "optimizer_steps": 8,
+  "trainable_parameters": 105698,
+  "hidden_neurons": 0,
+  "activation": null,
+  "bias": false,
+  "time_limit": "00:20:00",
+  "expected_output": "results/all-adjacent_direct_selected_mlp_seed42_38654553",
+  "code_sha256": {
+    "cross_layer_adapter.py": "ad0ffab4330ff61c0801b73da582006f6262c212a7e0d2ee02426bf2d1f1152a",
+    "adjacent_adapters.py": "fda6d8d7df457b66b295a8f6558159c75a6a1423730fd37ffc905b6948313522",
+    "train_cross_layer.py": "408e4211d7d8cb06ff04fe6adc3718f7641608ce904893d1eb54a0830b0769a1",
+    "test_direct_edges.py": "6e1d7239ea5bd045580de0a6d297bc558b8aa6c37b16098e11e202e3d3aa33b4",
+    "viking_cross_layer.sbatch": "f4a3ecbd7c31a9cd7cb7506ba4196aa82e85eeb075fbc4a0124c1dfcde02dbad"
+  }
+}

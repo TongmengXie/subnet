@@ -19,12 +19,14 @@ from pathlib import Path
 import random
 import re
 import sys
+from functools import partial
 
 import numpy as np
 import torch
 from torch.nn.utils import clip_grad_norm_
 from cross_layer_adapter import CrossLayerAdapter, PLACEMENTS, load_neurostrike_channel_map
 from adjacent_adapters import AdjacentAdapter
+from neuron_selection import count_matched_random_neurons
 
 
 def get_args():
@@ -34,11 +36,19 @@ def get_args():
     ap.add_argument('--selection', type=Path, default=None,
                     help='Precomputed NeuroStrike .p (trusted local pickle)')
     ap.add_argument('--threshold', type=float, default=3.)
+    ap.add_argument('--neuron-selection', choices=['neurostrike', 'random'], default='neurostrike')
+    ap.add_argument('--selection-seed', type=int, default=None,
+                    help='Independent random-neuron mask seed; required for random selection')
+    ap.add_argument('--prompt-date', default='13 Nov 2026',
+                    help='Fixed Llama chat-template date, matching the completed reference runs')
     ap.add_argument('--source', type=int, default=7)
     ap.add_argument('--target', type=int, default=8)
     ap.add_argument('--scope', choices=['pair', 'all-adjacent'], default='pair')
-    ap.add_argument('--method', choices=['connected', 'independent'], default='connected')
+    ap.add_argument('--method', choices=['connected', 'independent', 'direct'], default='connected',
+                    help='direct: one dense source-to-target matrix, no hidden neurons/tanh/bias')
     ap.add_argument('--rank', type=int, default=8)
+    ap.add_argument('--activation', choices=['tanh', 'identity'], default=None)
+    ap.add_argument('--bias', action='store_true', help='Biases in both hidden transforms, or direct output bias')
     ap.add_argument('--placement', choices=PLACEMENTS, default='selected_mlp',
                     help='Target injection site; see README for interpretation')
     ap.add_argument('--train-n', type=int, default=500)
@@ -55,12 +65,23 @@ def get_args():
     ap.add_argument('--out', type=Path, default=Path('results/cross_layer'))
     ap.add_argument('--smoke', action='store_true', help='32 train / 16 val, fast integration check')
     a = ap.parse_args()
+    if a.neuron_selection == 'random' and (a.selection_seed is None or a.selection_seed < 0):
+        ap.error('Random selection requires a nonnegative --selection-seed')
+    if a.neuron_selection == 'neurostrike' and a.selection_seed is not None:
+        ap.error('--selection-seed applies only to random selection')
+    a.activation = a.activation or ('identity' if a.method == 'direct' else 'tanh')
+    if a.method == 'direct' and a.activation != 'identity':
+        ap.error('Direct connections have no activation function; use identity')
+    if a.method == 'independent' and (a.activation != 'tanh' or a.bias):
+        ap.error('Independent control retains tanh without biases')
     if a.smoke:
         a.train_n, a.val_n, a.val_every, a.mini_val_n = 32, 16, 4, 8
     if not (0 < a.sciq_share < 1) or min(a.train_n, a.val_n, a.grad_accum, a.epochs) < 1:
         ap.error('Expected positive sizes/steps and SciQ share in (0,1)')
     if a.scope == 'pair' and a.method != 'connected':
-        ap.error('Independent control requires --scope all-adjacent')
+        ap.error('independent/direct methods require --scope all-adjacent')
+    if a.method == 'direct' and a.rank != 8:
+        ap.error('--rank does not apply to direct connections; omit it')
     if a.scope == 'all-adjacent' and a.placement != 'selected_mlp':
         ap.error('All-adjacent currently supports selected_mlp only')
     if min(a.rank, a.val_every, a.mini_val_n) < 1:
@@ -205,6 +226,7 @@ def main():
     sys.path.insert(0, str(repo_white))
     import util_model
 
+    torch.cuda.reset_peak_memory_stats()
     dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
     print(f'Model: {args.model}; dtype: {dtype}; output: {args.out}', flush=True)
     model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=dtype).to('cuda')
@@ -214,7 +236,16 @@ def main():
         model.gradient_checkpointing_disable()
     for p in model.parameters():
         p.requires_grad_(False)
+    reference_channels = channels
+    if args.neuron_selection == 'random':
+        modules = dict(model.named_modules())
+        dimensions = {i: modules[f'model.layers.{i}.mlp.down_proj'].in_features for i in channels}
+        channels = count_matched_random_neurons(channels, dimensions, seed=args.selection_seed)
+        source, target = channels.get(args.source, []), channels.get(args.target, [])
+    overlap = {i: len(set(ids) & set(reference_channels[i])) for i, ids in channels.items()}
+    print(f'Neuron selection: {args.neuron_selection}; mask seed: {args.selection_seed}', flush=True)
     tokenizer = AutoTokenizer.from_pretrained(args.model)
+    tokenizer.apply_chat_template = partial(tokenizer.apply_chat_template, date_string=args.prompt_date)
     model_name = args.model.split('/')[-1]
 
     def prompt_fn(q):
@@ -225,11 +256,13 @@ def main():
         return generated[0]
 
     if args.scope == 'all-adjacent':
-        adapter = AdjacentAdapter(model, channels, rank=args.rank, method=args.method)
+        adapter = AdjacentAdapter(model, channels, rank=args.rank, method=args.method,
+                                  activation=args.activation, bias=args.bias)
     else:
         adapter = CrossLayerAdapter(model, source_layer=args.source, target_layer=args.target,
                                     source_channels=source, target_channels=target, rank=args.rank,
-                                    placement=args.placement)
+                                    placement=args.placement,
+                                    activation=args.activation, bias=args.bias)
     print(f'Adapter scope={args.scope}, method={args.method}, parameters={adapter.parameter_count}', flush=True)
     print('All pretrained model weights frozen:',
           all(not p.requires_grad for p in model.parameters()), flush=True)
@@ -304,11 +337,17 @@ def main():
     with torch.no_grad(), adapter.installed(model):
         trained_probe = model(probe, use_cache=False).logits.detach().cpu()
     checkpoint = {
-        'architecture': 'selected-adjacent-v3' if args.scope == 'all-adjacent' else 'cross-layer-selected-output-basis-skip-v2',
+        'architecture': ('selected-adjacent-variants-v1' if args.bias or args.activation != ('identity' if args.method == 'direct' else 'tanh') else
+                         'selected-adjacent-direct-v1' if args.method == 'direct' else
+                         'selected-adjacent-v3' if args.scope == 'all-adjacent' else 'cross-layer-selected-output-basis-skip-v2'),
         'scope': args.scope, 'method': args.method,
+        'neuron_selection': args.neuron_selection, 'selection_seed': args.selection_seed,
+        'activation': args.activation, 'bias': args.bias,
+        'prompt_date': args.prompt_date,
         'network_config': adapter.config() if args.scope == 'all-adjacent' else None,
         'model': args.model, 'source_layer': args.source, 'target_layer': args.target,
-        'source_channels': source, 'target_channels': target, 'rank': args.rank,
+        'source_channels': source, 'target_channels': target,
+        'rank': None if args.method == 'direct' else args.rank,
         'placement': args.placement,
         'state_dict': {k:v.detach().cpu() for k,v in adapter.state_dict().items()},
     }
@@ -325,7 +364,8 @@ def main():
         adapter = AdjacentAdapter(model, **cfg)
     else:
         adapter = CrossLayerAdapter(model, source_layer=args.source, target_layer=args.target,
-            source_channels=source, target_channels=target, rank=args.rank, placement=args.placement)
+            source_channels=source, target_channels=target, rank=args.rank, placement=args.placement,
+                                    activation=args.activation, bias=args.bias)
     adapter.load_state_dict(saved['state_dict'], strict=True)
     adapter.eval()
     with torch.no_grad(), adapter.installed(model):
@@ -352,20 +392,21 @@ def main():
               ['method','domain','heldout_ce'])
     print('Heldout CE:', results, flush=True)
 
-    meta = {'model': args.model, 'rank': args.rank, 'source_layer': args.source,
+    meta = {'model': args.model, 'rank': None if args.method == 'direct' else args.rank, 'source_layer': args.source,
             'target_layer': args.target, 'source_count': len(source),
             'target_count': len(target), 'trainable_parameters': adapter.parameter_count,
             'placement': args.placement,
             'scope': args.scope, 'method': args.method,
+            'neuron_selection': args.neuron_selection, 'selection_seed': args.selection_seed,
+            'overlap_with_neurostrike': overlap,
+            'activation': args.activation, 'bias': args.bias,
+            'prompt_date': args.prompt_date,
             'network_config': adapter.config() if args.scope == 'all-adjacent' else None,
             'source_module': getattr(adapter, 'source_name', None),
             'target_module': getattr(adapter, 'target_name', None),
-            'intervention': ('channel-separable sum b*tanh(a*z_target_channel)'
-                             if args.method == 'independent' else
-                             'target z_selected += W2*tanh(W1*source z_selected)'
-                              if args.placement == 'selected_mlp' else
-                              'target residual stream += frozen target down_proj selected '
-                              'columns @ W2*tanh(W1*source z_selected)'),
+            'intervention': ('per-neuron sum b*tanh(a*z)' if args.method == 'independent' else
+                             f"{'direct W*source' if args.method == 'direct' else 'W2*'+args.activation+'(W1*source+b1)'}; "
+                             f"bias={args.bias}; placement={args.placement}"),
             'pretrained_frozen': True, 'selection_threshold': args.threshold,
             'trusted_selection_path': str(selection_path),
             'train_n': args.train_n, 'val_n': args.val_n, 'seed': args.seed,
@@ -380,10 +421,13 @@ def main():
             'sciq_share': args.sciq_share, 'dtype': str(dtype),
             'python': platform.python_version(), 'torch': torch.__version__,
             'code_sha256': {p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
-                            for p in ('train_cross_layer.py', 'cross_layer_adapter.py', 'adjacent_adapters.py')},
+                            for p in ('train_cross_layer.py', 'cross_layer_adapter.py', 'adjacent_adapters.py', 'neuron_selection.py')},
             'tokenized_sha256': {name: hashlib.sha256(json.dumps(
                 [(ids.tolist(), labels.tolist(), domain) for ids, labels, _, domain in samples]).encode()).hexdigest()
                 for name, samples in [('train', train), ('val', val)]},
+            'gpu_memory': {'peak_allocated_GiB': torch.cuda.max_memory_allocated()/2**30,
+                           'peak_reserved_GiB': torch.cuda.max_memory_reserved()/2**30,
+                           'gpu': torch.cuda.get_device_name()},
             'notes': 'No safety ASR judged. CE does not establish safety.'}
     with open(args.out / 'manifest.json', 'w') as f:
         json.dump(meta, f, indent=2)

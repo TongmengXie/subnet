@@ -1,0 +1,7 @@
+method,domain,heldout_ce
+original,all,2.4361639392400436
+original,SciQ,3.758760503575772
+original,PKU-SafeRLHF,2.4226120418882244
+connected,all,2.1933687252385545
+connected,SciQ,1.863094601450087
+connected,PKU-SafeRLHF,2.196752856986841

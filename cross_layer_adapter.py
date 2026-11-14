@@ -65,7 +65,10 @@ PLACEMENTS = (
 
 
 class CrossLayerAdapter(nn.Module):
-    """Fully-connected layer_i_selected -> rank -> layer_j_selected skip path.
+    """Selected-neuron skip: bottleneck+tanh, or one direct dense linear map.
+
+    connection='direct' has no hidden neurons or activation function; bias is optional.
+    Its zero-initialized matrix maps all selected sources to all selected targets.
 
     Source: down_proj pre-hook on source MLP selected channels.
     Target hook depends on placement; see PLACEMENTS. Constructor does not
@@ -84,14 +87,23 @@ class CrossLayerAdapter(nn.Module):
         target_channels: Iterable[int],
         rank: int = 8,
         placement: str = 'selected_mlp',
+        connection: str = 'bottleneck',
+        activation: str | None = None,
+        bias: bool = False,
     ):
         super().__init__()
         if not (0 <= source_layer < target_layer):
             raise ValueError('Require source_layer < target_layer')
         if rank < 1:
             raise ValueError('rank must be positive')
+        if connection not in ('bottleneck', 'direct'):
+            raise ValueError('connection must be bottleneck or direct')
         if placement not in PLACEMENTS:
             raise ValueError(f'placement must be one of {PLACEMENTS}, got {placement!r}')
+        activation = activation or ('identity' if connection == 'direct' else 'tanh')
+        if activation not in ('tanh', 'identity') or (connection == 'direct' and activation != 'identity'):
+            raise ValueError('Direct connections require identity; bottleneck supports tanh/identity')
+        self.activation, self.bias = activation, bool(bias)
         self.source_layer = int(source_layer)
         self.target_layer = int(target_layer)
         self.placement = placement
@@ -114,12 +126,22 @@ class CrossLayerAdapter(nn.Module):
             raise TypeError('Only separate nn.Linear down_proj modules are supported')
         self.source_channels = self._validate_channels(source_channels, source_mod.in_features, 'source')
         self.target_channels = self._validate_channels(target_channels, target_mod.in_features, 'target')
-        self.rank = int(rank)
+        self.connection = connection
+        self.rank = int(rank) if connection == 'bottleneck' else None
         self.target_hidden_size = int(target_mod.out_features)
-        self.encode = nn.Linear(len(self.source_channels), rank, bias=False)
-        self.decode = nn.Linear(rank, len(self.target_channels), bias=False)
-        nn.init.normal_(self.encode.weight, std=1 / len(self.source_channels) ** .5)
-        nn.init.zeros_(self.decode.weight)  # exact zero correction at initialization
+        if connection == 'direct':
+            self.edges = nn.Linear(len(self.source_channels), len(self.target_channels), bias=bias)
+            nn.init.zeros_(self.edges.weight)  # identity at init, no hidden units
+            if bias:
+                nn.init.zeros_(self.edges.bias)
+        else:
+            self.encode = nn.Linear(len(self.source_channels), rank, bias=bias)
+            self.decode = nn.Linear(rank, len(self.target_channels), bias=bias)
+            nn.init.normal_(self.encode.weight, std=1 / len(self.source_channels) ** .5)
+            nn.init.zeros_(self.decode.weight)  # exact zero correction at initialization
+            if bias:
+                nn.init.zeros_(self.encode.bias)
+                nn.init.zeros_(self.decode.bias)
         # Keep a non-registered reference to frozen down_proj. PyTorch module
         # registration would incorrectly include the whole pretrained model.
         object.__setattr__(self, '_target_down_proj', target_mod)
@@ -141,8 +163,11 @@ class CrossLayerAdapter(nn.Module):
 
     def forward(self, source_selected: Tensor) -> Tensor:
         """Return target-channel correction; does not modify any model activations."""
+        if self.connection == 'direct':
+            return self.edges(source_selected.to(device=self.edges.weight.device, dtype=torch.float32))
         x = source_selected.to(device=self.encode.weight.device, dtype=torch.float32)
-        return self.decode(torch.tanh(self.encode(x)))
+        hidden = self.encode(x)
+        return self.decode(torch.tanh(hidden) if self.activation == 'tanh' else hidden)
 
     def _capture_source(self, _module: nn.Module, args: tuple):
         if not args:

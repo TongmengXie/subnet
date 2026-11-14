@@ -1,0 +1,325 @@
+{
+  "project": "/users/wmd548/myproject/edge_learning",
+  "created_utc": "2026-11-14T01:33:55.896281+00:00",
+  "tasks": [
+    {
+      "task": 0,
+      "method": "connected",
+      "rank": 4,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 42,
+      "parameters": 11271
+    },
+    {
+      "task": 1,
+      "method": "connected",
+      "rank": 4,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 11271
+    },
+    {
+      "task": 2,
+      "method": "connected",
+      "rank": 8,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 42,
+      "parameters": 21279
+    },
+    {
+      "task": 3,
+      "method": "connected",
+      "rank": 8,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 21279
+    },
+    {
+      "task": 4,
+      "method": "connected",
+      "rank": 16,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 42,
+      "parameters": 41295
+    },
+    {
+      "task": 5,
+      "method": "connected",
+      "rank": 16,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 41295
+    },
+    {
+      "task": 6,
+      "method": "connected",
+      "rank": 32,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 42,
+      "parameters": 81327
+    },
+    {
+      "task": 7,
+      "method": "connected",
+      "rank": 32,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 81327
+    },
+    {
+      "task": 8,
+      "method": "connected",
+      "rank": 64,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 42,
+      "parameters": 161391
+    },
+    {
+      "task": 9,
+      "method": "connected",
+      "rank": 64,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 161391
+    },
+    {
+      "task": 10,
+      "method": "direct",
+      "rank": null,
+      "activation": "identity",
+      "bias": true,
+      "seed": 42,
+      "parameters": 106961
+    },
+    {
+      "task": 11,
+      "method": "connected",
+      "rank": 4,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 43,
+      "parameters": 11271
+    },
+    {
+      "task": 12,
+      "method": "connected",
+      "rank": 4,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 11271
+    },
+    {
+      "task": 13,
+      "method": "connected",
+      "rank": 8,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 43,
+      "parameters": 21279
+    },
+    {
+      "task": 14,
+      "method": "connected",
+      "rank": 8,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 21279
+    },
+    {
+      "task": 15,
+      "method": "connected",
+      "rank": 16,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 43,
+      "parameters": 41295
+    },
+    {
+      "task": 16,
+      "method": "connected",
+      "rank": 16,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 41295
+    },
+    {
+      "task": 17,
+      "method": "connected",
+      "rank": 32,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 43,
+      "parameters": 81327
+    },
+    {
+      "task": 18,
+      "method": "connected",
+      "rank": 32,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 81327
+    },
+    {
+      "task": 19,
+      "method": "connected",
+      "rank": 64,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 43,
+      "parameters": 161391
+    },
+    {
+      "task": 20,
+      "method": "connected",
+      "rank": 64,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 161391
+    },
+    {
+      "task": 21,
+      "method": "direct",
+      "rank": null,
+      "activation": "identity",
+      "bias": true,
+      "seed": 43,
+      "parameters": 106961
+    },
+    {
+      "task": 22,
+      "method": "connected",
+      "rank": 4,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 44,
+      "parameters": 11271
+    },
+    {
+      "task": 23,
+      "method": "connected",
+      "rank": 4,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 11271
+    },
+    {
+      "task": 24,
+      "method": "connected",
+      "rank": 8,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 44,
+      "parameters": 21279
+    },
+    {
+      "task": 25,
+      "method": "connected",
+      "rank": 8,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 21279
+    },
+    {
+      "task": 26,
+      "method": "connected",
+      "rank": 16,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 44,
+      "parameters": 41295
+    },
+    {
+      "task": 27,
+      "method": "connected",
+      "rank": 16,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 41295
+    },
+    {
+      "task": 28,
+      "method": "connected",
+      "rank": 32,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 44,
+      "parameters": 81327
+    },
+    {
+      "task": 29,
+      "method": "connected",
+      "rank": 32,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 81327
+    },
+    {
+      "task": 30,
+      "method": "connected",
+      "rank": 64,
+      "activation": "tanh",
+      "bias": true,
+      "seed": 44,
+      "parameters": 161391
+    },
+    {
+      "task": 31,
+      "method": "connected",
+      "rank": 64,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 161391
+    },
+    {
+      "task": 32,
+      "method": "direct",
+      "rank": null,
+      "activation": "identity",
+      "bias": true,
+      "seed": 44,
+      "parameters": 106961
+    }
+  ],
+  "train_n": 500,
+  "val_n": 100,
+  "epochs": 1,
+  "optimizer_steps": 125,
+  "lr": 0.0002,
+  "placement": "selected_mlp",
+  "scope": "all-adjacent",
+  "max_concurrent": 2,
+  "validation_role": "Width-selection validation; not an untouched final test",
+  "code_sha256": {
+    "run_width_sweep.py": "f8d47cf2fde859a367cae2cc7c1260a73ace8316a644fd742150d62cc28e2643",
+    "train_cross_layer.py": "a6cc84a11ab66fdf7cfe3757590cd416fe1d4948c3b851bcf2e8028b62881106",
+    "cross_layer_adapter.py": "c8cdc7203b2968873389ccfb40c228940a835001c1418c877b8787f7f822fe73",
+    "adjacent_adapters.py": "e654db9fd063f95867e2d79feac3569da6f8794dffdd6c782cd29a9c7dd215ad",
+    "test_architecture_variants.py": "4a5d670049fc8f297b0153c936741e5fdc98f6e94d9accdec3adc080ccd45ea3",
+    "test_direct_edges.py": "6e1d7239ea5bd045580de0a6d297bc558b8aa6c37b16098e11e202e3d3aa33b4",
+    "viking_width_sweep.sbatch": "47ce336a0d3e96cdf0ee157ce023c6108120752f445dc38d23a52793e748c055"
+  },
+  "array_job_id": "38655122",
+  "status": "cancelled_while_all_tasks_pending",
+  "superseded_by_array": "38655694",
+  "superseded_by_directory": "results/width_sweep_20261114_fixeddate"
+}

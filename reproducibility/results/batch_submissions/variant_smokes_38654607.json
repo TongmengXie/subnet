@@ -1,0 +1,51 @@
+{
+  "array_job_id": "38654607",
+  "submitted_at_utc": "2026-11-13T23:11:55.509703+00:00",
+  "purpose": "User-approved remaining architecture GPU smoke tests",
+  "max_concurrent_tasks": 2,
+  "seed": 42,
+  "train_n": 32,
+  "val_n": 16,
+  "optimizer_steps": 8,
+  "time_limit_per_task": "00:20:00",
+  "scope": "all-adjacent",
+  "placement": "selected_mlp",
+  "variants": [
+    {
+      "task": 0,
+      "method": "connected",
+      "activation": "tanh",
+      "bias": true,
+      "parameters": 21279
+    },
+    {
+      "task": 1,
+      "method": "connected",
+      "activation": "identity",
+      "bias": false,
+      "parameters": 19896
+    },
+    {
+      "task": 2,
+      "method": "connected",
+      "activation": "identity",
+      "bias": true,
+      "parameters": 21279
+    },
+    {
+      "task": 3,
+      "method": "direct",
+      "activation": "identity",
+      "bias": true,
+      "parameters": 106961
+    }
+  ],
+  "code_sha256": {
+    "viking_variant_smokes.sbatch": "4521beb76ee1f3c7bf554b9dc05c9c19ed972481b9a9cdaab17c378b6942e106",
+    "viking_cross_layer.sbatch": "42369c5a49df5f84059e57b821ce9d33022974c8c37673b61c1a77dbbfb23faf",
+    "train_cross_layer.py": "a6cc84a11ab66fdf7cfe3757590cd416fe1d4948c3b851bcf2e8028b62881106",
+    "cross_layer_adapter.py": "c8cdc7203b2968873389ccfb40c228940a835001c1418c877b8787f7f822fe73",
+    "adjacent_adapters.py": "e654db9fd063f95867e2d79feac3569da6f8794dffdd6c782cd29a9c7dd215ad",
+    "test_architecture_variants.py": "4a5d670049fc8f297b0153c936741e5fdc98f6e94d9accdec3adc080ccd45ea3"
+  }
+}
